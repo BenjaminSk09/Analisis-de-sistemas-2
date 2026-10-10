@@ -1,113 +1,123 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulario de Usuario</title>
-    <link rel="stylesheet" th:href="@{/css/estilos.css}">
-</head>
+<head th:replace="~{fragments/layout :: head('Formulario de Usuario')}"></head>
 
 <body>
 
-    <header class="topbar">
-        <span class="marca">Sistema de Condominio</span>
-        <span class="sesion">
-            <span th:text="${session.usuario.nombreCompleto}"></span>
-            (<span th:text="${session.usuario.rol != null
-                    ? session.usuario.rol.nombre : 'Sin rol'}"></span>)
-            <a th:href="@{/dashboard}">Panel</a>
-            <a th:href="@{/logout}">Salir</a>
-        </span>
-    </header>
+    <div class="app-shell">
 
-    <main class="contenedor">
+        <aside th:replace="~{fragments/layout :: sidebar('usuarios')}"></aside>
 
-        <h1 class="titulo">Formulario de Usuario</h1>
+        <div class="app-main">
 
-        <p class="error" th:if="${error}" th:text="${error}"></p>
+            <header th:replace="~{fragments/layout :: topbar('Formulario de Usuario')}"></header>
 
-        <form class="formulario"
-              th:action="@{/usuarios/guardar}"
-              method="post">
+            <main class="app-content">
 
-            <input type="hidden"
-                   name="idUsuario"
-                   th:value="${usuario.idUsuario}">
+                <div class="page-head">
+                    <h2>Formulario de Usuario</h2>
+                    <a class="btn btn-outline-secondary" th:href="@{/usuarios}">
+                        <i class="bi bi-arrow-left"></i> Volver
+                    </a>
+                </div>
 
-            <label>Persona:</label>
-            <select name="idPersona" required>
-                <option value="">Seleccione</option>
+                <div class="alert alert-danger" th:if="${error}" th:text="${error}"></div>
 
-                <option th:each="p : ${personas}"
-                        th:value="${p.idPersona}"
-                        th:selected="${(p.idPersona == idPersonaSeleccionada)
-                                || (usuario.persona != null
-                                    && p.idPersona == usuario.persona.idPersona)}"
-                        th:text="${p.nombres + ' ' + p.apellidos
-                                + ' (DPI ' + p.dpi + ')'}">
-                </option>
-            </select>
+                <div class="form-panel">
 
-            <small th:if="${esNuevo}">
-                Los datos personales (nombres, DPI, teléfono, correo) se
-                registran en el módulo de Personas.
-            </small>
+                    <form th:action="@{/usuarios/guardar}" method="post">
 
-            <label>Nombre de usuario:</label>
-            <input type="text"
-                   name="nombreUsuario"
-                   th:value="${esNuevo}
-                            ? ${nombreUsuarioIntentado} : ${usuario.username}"
-                   required>
+                        <input type="hidden"
+                               name="idUsuario"
+                               th:value="${usuario.idUsuario}">
 
-            <label>Contraseña:</label>
-            <input type="password"
-                   name="clave"
-                   th:required="${esNuevo}"
-                   placeholder="Dejar vacío para no cambiarla">
-            <small>Se guarda como hash SHA-256, no en texto plano.</small>
+                        <div class="row g-3">
 
-            <label>Rol:</label>
-            <select name="idRol" required>
-                <option value="">Seleccione</option>
+                            <div class="col-md-6">
+                                <label class="form-label" for="idPersona">Persona</label>
+                                <select class="form-select" id="idPersona" name="idPersona" required>
+                                    <option value="">Seleccione</option>
+                                    <option th:each="p : ${personas}"
+                                            th:value="${p.idPersona}"
+                                            th:selected="${(p.idPersona == idPersonaSeleccionada)
+                                                    || (usuario.persona != null
+                                                        && p.idPersona == usuario.persona.idPersona)}"
+                                            th:text="${p.nombres + ' ' + p.apellidos
+                                                    + ' (DPI ' + p.dpi + ')'}">
+                                    </option>
+                                </select>
+                                <div class="form-text" th:if="${esNuevo}">
+                                    Los datos personales (nombres, DPI, teléfono, correo) se
+                                    registran en el módulo de Personas.
+                                </div>
+                            </div>
 
-                <option th:each="r : ${roles}"
-                        th:value="${r.idRol}"
-                        th:selected="${(r.idRol == idRolSeleccionado)
-                                || (usuario.rol != null
-                                    && r.idRol == usuario.rol.idRol)}"
-                        th:text="${r.nombre}">
-                </option>
-            </select>
+                            <div class="col-md-6">
+                                <label class="form-label" for="nombreUsuario">Nombre de usuario</label>
+                                <input type="text" class="form-control" id="nombreUsuario" name="nombreUsuario"
+                                       th:value="${esNuevo}
+                                               ? ${nombreUsuarioIntentado} : ${usuario.username}"
+                                       required>
+                            </div>
 
-            <label>Estado:</label>
-            <select name="estado" required>
-                <option value="true"
-                        th:selected="${usuario.estado == true}">
-                    Activo
-                </option>
+                            <div class="col-md-6">
+                                <label class="form-label" for="clave">Contraseña</label>
+                                <input type="password" class="form-control" id="clave" name="clave"
+                                       th:required="${esNuevo}"
+                                       placeholder="Dejar vacío para no cambiarla">
+                                <div class="form-text">Se guarda como hash SHA-256, no en texto plano.</div>
+                            </div>
 
-                <option value="false"
-                        th:selected="${usuario.estado == false}">
-                    Inactivo
-                </option>
-            </select>
-            <small>Un usuario inactivo no puede iniciar sesión.</small>
+                            <div class="col-md-6">
+                                <label class="form-label" for="idRol">Rol</label>
+                                <select class="form-select" id="idRol" name="idRol" required>
+                                    <option value="">Seleccione</option>
+                                    <option th:each="r : ${roles}"
+                                            th:value="${r.idRol}"
+                                            th:selected="${(r.idRol == idRolSeleccionado)
+                                                    || (usuario.rol != null
+                                                        && r.idRol == usuario.rol.idRol)}"
+                                            th:text="${r.nombre}">
+                                    </option>
+                                </select>
+                            </div>
 
-            <div class="acciones">
-                <button type="submit" class="principal">
-                    Guardar
-                </button>
+                            <div class="col-md-6">
+                                <label class="form-label" for="estadoUsuario">Estado</label>
+                                <select class="form-select" id="estadoUsuario" name="estado" required>
+                                    <option value="true"
+                                            th:selected="${usuario.estado == true}">
+                                        Activo
+                                    </option>
+                                    <option value="false"
+                                            th:selected="${usuario.estado == false}">
+                                        Inactivo
+                                    </option>
+                                </select>
+                                <div class="form-text">Un usuario inactivo no puede iniciar sesión.</div>
+                            </div>
 
-                <a th:href="@{/usuarios}">
-                    Cancelar
-                </a>
-            </div>
+                        </div>
 
-        </form>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-lg"></i> Guardar
+                            </button>
+                            <a class="btn btn-outline-secondary" th:href="@{/usuarios}">Cancelar</a>
+                        </div>
 
-    </main>
+                    </form>
+
+                </div>
+
+            </main>
+
+        </div>
+
+    </div>
+
+    <div th:replace="~{fragments/layout :: scripts}"></div>
 
 </body>
 

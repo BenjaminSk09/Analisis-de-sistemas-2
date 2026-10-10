@@ -1,116 +1,119 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel principal - Sistema de Condominio</title>
-    <link rel="stylesheet" th:href="@{/css/estilos.css}">
-</head>
+<head th:replace="~{fragments/layout :: head('Panel principal')}"></head>
 
 <body>
 
-    <header class="topbar">
+    <div class="app-shell">
 
-        <span class="marca">Sistema de Condominio</span>
+        <aside th:replace="~{fragments/layout :: sidebar('dashboard')}"></aside>
 
-        <span class="sesion">
-            <span th:text="${session.usuario.nombreCompleto}"></span>
-            (<span th:text="${session.usuario.rol != null
-                    ? session.usuario.rol.nombre : 'Sin rol'}"></span>)
-            <a th:href="@{/logout}">Salir</a>
-        </span>
+        <div class="app-main">
 
-    </header>
+            <header th:replace="~{fragments/layout :: topbar('Panel principal')}"></header>
 
-    <main class="contenedor">
+            <main class="app-content">
 
-        <h1 class="titulo">Panel principal</h1>
+                <div class="alert alert-danger" th:if="${error}" th:text="${error}"></div>
 
-        <p class="error" th:if="${error}" th:text="${error}"></p>
-
-        <p class="ok" th:if="${param.denegado}">
-            No tienes permiso para acceder a esa sección.
-        </p>
-
-        <h2>Resumen del condominio</h2>
-
-        <div class="grid">
-
-            <a class="card" th:href="@{/personas}">
-                <div class="numero" th:text="${totalPersonas}"></div>
-                <div class="etiqueta">Personas</div>
-            </a>
-
-            <a class="card" th:href="@{/viviendas}">
-                <div class="numero" th:text="${totalViviendas}"></div>
-                <div class="etiqueta">Viviendas</div>
-            </a>
-
-            <a class="card" th:href="@{/vehiculos}">
-                <div class="numero" th:text="${totalVehiculos}"></div>
-                <div class="etiqueta">Vehículos</div>
-            </a>
-
-            <a class="card" th:href="@{/vivienda-persona}">
-                <div class="numero" th:text="${totalRelaciones}"></div>
-                <div class="etiqueta">Vivienda - Persona</div>
-            </a>
-
-            <a class="card" th:href="@{/cuotas}">
-                <div class="numero" th:text="${totalCuotas}"></div>
-                <div class="etiqueta">Cuotas</div>
-            </a>
-
-            <a class="card" th:href="@{/pagos}">
-                <div class="numero" th:text="${totalPagos}"></div>
-                <div class="etiqueta">Pagos</div>
-            </a>
-
-            <a class="card" th:href="@{/notificaciones}">
-                <div class="numero" th:text="${totalNotificaciones}"></div>
-                <div class="etiqueta">Notificaciones</div>
-
-                <div class="badge"
-                     th:if="${notificacionesPendientes > 0}"
-                     th:text="${notificacionesPendientes} + ' sin atender'">
+                <div class="alert alert-warning" th:if="${param.denegado}">
+                    No tienes permiso para acceder a esa sección.
                 </div>
-            </a>
+
+                <h2 class="h5 fw-bold mb-3">Resumen del condominio</h2>
+
+                <div class="kpi-grid">
+
+                    <a class="kpi" th:href="@{/personas}">
+                        <span class="kpi-icon"><i class="bi bi-people"></i></span>
+                        <span class="kpi-value" th:text="${totalPersonas}">0</span>
+                        <span class="kpi-label">Personas</span>
+                    </a>
+
+                    <a class="kpi" th:href="@{/viviendas}">
+                        <span class="kpi-icon"><i class="bi bi-house-door"></i></span>
+                        <span class="kpi-value" th:text="${totalViviendas}">0</span>
+                        <span class="kpi-label">Viviendas</span>
+                    </a>
+
+                    <a class="kpi" th:href="@{/vehiculos}">
+                        <span class="kpi-icon"><i class="bi bi-car-front"></i></span>
+                        <span class="kpi-value" th:text="${totalVehiculos}">0</span>
+                        <span class="kpi-label">Vehículos</span>
+                    </a>
+
+                    <a class="kpi" th:href="@{/vivienda-persona}">
+                        <span class="kpi-icon"><i class="bi bi-diagram-3"></i></span>
+                        <span class="kpi-value" th:text="${totalRelaciones}">0</span>
+                        <span class="kpi-label">Vivienda - Persona</span>
+                    </a>
+
+                    <a class="kpi" th:href="@{/cuotas}">
+                        <span class="kpi-icon"><i class="bi bi-receipt"></i></span>
+                        <span class="kpi-value" th:text="${totalCuotas}">0</span>
+                        <span class="kpi-label">Cuotas</span>
+                    </a>
+
+                    <a class="kpi" th:href="@{/pagos}">
+                        <span class="kpi-icon"><i class="bi bi-cash-coin"></i></span>
+                        <span class="kpi-value" th:text="${totalPagos}">0</span>
+                        <span class="kpi-label">Pagos</span>
+                    </a>
+
+                    <a class="kpi" th:href="@{/notificaciones}">
+                        <span class="kpi-icon"><i class="bi bi-bell"></i></span>
+                        <span class="kpi-value" th:text="${totalNotificaciones}">0</span>
+                        <span class="kpi-label">Notificaciones</span>
+                        <span class="chip chip-warn mt-1"
+                              th:if="${notificacionesPendientes > 0}"
+                              th:text="${notificacionesPendientes} + ' sin atender'"></span>
+                    </a>
+
+                </div>
+
+                <div th:if="${session.usuario.rol != null
+                        and session.usuario.rol.esAdministrador()}">
+
+                    <h2 class="h5 fw-bold mb-3">Administración</h2>
+
+                    <div class="kpi-grid">
+
+                        <a class="kpi" th:href="@{/usuarios}">
+                            <span class="kpi-icon"><i class="bi bi-person-badge"></i></span>
+                            <span class="kpi-value" th:text="${totalUsuarios}">0</span>
+                            <span class="kpi-label">Usuarios del sistema</span>
+                        </a>
+
+                        <div class="kpi">
+                            <span class="kpi-icon"><i class="bi bi-shield-check"></i></span>
+                            <span class="kpi-value" th:text="${totalAdministradores}">0</span>
+                            <span class="kpi-label">Administradores</span>
+                        </div>
+
+                        <div class="kpi">
+                            <span class="kpi-icon"><i class="bi bi-clipboard-check"></i></span>
+                            <span class="kpi-value" th:text="${totalPersonalAdministrativo}">0</span>
+                            <span class="kpi-label">Personal Administrativo</span>
+                        </div>
+
+                        <div class="kpi">
+                            <span class="kpi-icon"><i class="bi bi-wallet2"></i></span>
+                            <span class="kpi-value" th:text="${totalEncargadosCobros}">0</span>
+                            <span class="kpi-label">Encargados de Cobros</span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </main>
 
         </div>
 
-        <div th:if="${session.usuario.rol != null
-                and session.usuario.rol.esAdministrador()}">
+    </div>
 
-            <h2>Administración</h2>
-
-            <div class="grid">
-
-                <a class="card" th:href="@{/usuarios}">
-                    <div class="numero" th:text="${totalUsuarios}"></div>
-                    <div class="etiqueta">Usuarios del sistema</div>
-                </a>
-
-                <div class="card">
-                    <div class="numero" th:text="${totalAdministradores}"></div>
-                    <div class="etiqueta">Administradores</div>
-                </div>
-
-                <div class="card">
-                    <div class="numero" th:text="${totalPersonalAdministrativo}"></div>
-                    <div class="etiqueta">Personal Administrativo</div>
-                </div>
-
-                <div class="card">
-                    <div class="numero" th:text="${totalEncargadosCobros}"></div>
-                    <div class="etiqueta">Encargados de Cobros</div>
-                </div>
-
-            </div>
-
-        </div>
-
-    </main>
+    <div th:replace="~{fragments/layout :: scripts}"></div>
 
 </body>
 

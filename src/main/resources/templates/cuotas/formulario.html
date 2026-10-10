@@ -1,137 +1,135 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulario de Cuota</title>
-    <link rel="stylesheet" th:href="@{/css/estilos.css}">
-</head>
+<head th:replace="~{fragments/layout :: head('Formulario de Cuota')}"></head>
 
 <body>
 
-    <header th:replace="~{fragments/comun :: barra}"></header>
+    <div class="app-shell">
 
-    <main class="contenedor">
+        <aside th:replace="~{fragments/layout :: sidebar('cuotas')}"></aside>
 
-        <h1>Formulario de Cuota</h1>
+        <div class="app-main">
 
-        <p class="error" th:if="${error}" th:text="${error}"></p>
+            <header th:replace="~{fragments/layout :: topbar('Formulario de Cuota')}"></header>
 
-        <form th:action="@{/cuotas/guardar}" method="post">
+            <main class="app-content">
 
-            <input type="hidden" name="idCuota" th:value="${cuota.idCuota}">
+                <div class="page-head">
+                    <h2>Formulario de Cuota</h2>
+                    <a class="btn btn-outline-secondary" th:href="@{/cuotas}">
+                        <i class="bi bi-arrow-left"></i> Volver
+                    </a>
+                </div>
 
-            <div>
-                <label>Vivienda:</label>
+                <div class="alert alert-danger" th:if="${error}" th:text="${error}"></div>
 
-                <select name="idVivienda" required>
-                    <option value="">Seleccione</option>
+                <div class="form-panel">
 
-                    <option th:each="v : ${viviendas}"
-                            th:value="${v.idVivienda}"
-                            th:selected="${cuota.vivienda != null
-                                    && cuota.vivienda.idVivienda == v.idVivienda}"
-                            th:text="${v.numero + ' (' + v.bloque + ')'}">
-                    </option>
-                </select>
-            </div>
+                    <form th:action="@{/cuotas/guardar}" method="post">
 
-            <br>
+                        <input type="hidden" name="idCuota" th:value="${cuota.idCuota}">
 
-            <div>
-                <label>Concepto:</label>
+                        <div class="row g-3">
 
-                <select name="idConcepto" required>
-                    <option value="">Seleccione</option>
+                            <div class="col-md-6">
+                                <label class="form-label" for="idVivienda">Vivienda</label>
+                                <select class="form-select" id="idVivienda" name="idVivienda" required>
+                                    <option value="">Seleccione</option>
+                                    <option th:each="v : ${viviendas}"
+                                            th:value="${v.idVivienda}"
+                                            th:selected="${cuota.vivienda != null
+                                                    && cuota.vivienda.idVivienda == v.idVivienda}"
+                                            th:text="${v.numero + ' (' + v.bloque + ')'}">
+                                    </option>
+                                </select>
+                            </div>
 
-                    <option th:each="c : ${conceptos}"
-                            th:value="${c.idConcepto}"
-                            th:selected="${cuota.concepto != null
-                                    && cuota.concepto.idConcepto == c.idConcepto}"
-                            th:text="${c.nombre + ' (base Q' + c.montoBase
-                                    + ', ' + c.periodicidad + ')'}">
-                    </option>
-                </select>
-            </div>
+                            <div class="col-md-6">
+                                <label class="form-label" for="idConcepto">Concepto</label>
+                                <select class="form-select" id="idConcepto" name="idConcepto" required>
+                                    <option value="">Seleccione</option>
+                                    <option th:each="c : ${conceptos}"
+                                            th:value="${c.idConcepto}"
+                                            th:selected="${cuota.concepto != null
+                                                    && cuota.concepto.idConcepto == c.idConcepto}"
+                                            th:text="${c.nombre + ' (base Q' + c.montoBase
+                                                    + ', ' + c.periodicidad + ')'}">
+                                    </option>
+                                </select>
+                            </div>
 
-            <br>
+                            <div class="col-md-6">
+                                <label class="form-label" for="periodo">Periodo</label>
+                                <input type="text" class="form-control" id="periodo" name="periodo"
+                                       th:value="${cuota.periodo}"
+                                       placeholder="Ej. Septiembre 2026"
+                                       maxlength="20"
+                                       required>
+                            </div>
 
-            <div>
-                <label>Periodo:</label>
-                <input type="text"
-                       name="periodo"
-                       th:value="${cuota.periodo}"
-                       placeholder="Ej. Septiembre 2026"
-                       maxlength="20"
-                       required>
-            </div>
+                            <div class="col-md-6">
+                                <label class="form-label" for="monto">Monto</label>
+                                <input type="number" class="form-control" id="monto" name="monto"
+                                       step="0.01"
+                                       min="0"
+                                       th:value="${cuota.monto}"
+                                       required>
+                            </div>
 
-            <br>
+                            <div class="col-md-6">
+                                <label class="form-label" for="fechaEmision">Fecha de emisión</label>
+                                <input type="date" class="form-control" id="fechaEmision" name="fechaEmision"
+                                       th:value="${cuota.fechaEmision}"
+                                       required>
+                            </div>
 
-            <div>
-                <label>Monto:</label>
-                <input type="number"
-                       name="monto"
-                       step="0.01"
-                       min="0"
-                       th:value="${cuota.monto}"
-                       required>
-            </div>
+                            <div class="col-md-6">
+                                <label class="form-label" for="fechaVencimiento">Fecha de vencimiento</label>
+                                <input type="date" class="form-control" id="fechaVencimiento" name="fechaVencimiento"
+                                       th:value="${cuota.fechaVencimiento}"
+                                       required>
+                            </div>
 
-            <br>
+                            <div class="col-md-6">
+                                <label class="form-label" for="estado">Estado</label>
+                                <select class="form-select" id="estado" name="estado">
+                                    <option th:each="e : ${estados}"
+                                            th:value="${e}"
+                                            th:text="${e}"
+                                            th:selected="${cuota.estado == e}">
+                                    </option>
+                                </select>
+                            </div>
 
-            <div>
-                <label>Fecha de emisión:</label>
-                <input type="date"
-                       name="fechaEmision"
-                       th:value="${cuota.fechaEmision}"
-                       required>
-            </div>
+                            <div class="col-12" th:if="${!esNuevo}">
+                                <div class="form-text">
+                                    Lo pagado (Q<span th:text="${cuota.montoPagado}"></span>)
+                                    y el saldo se calculan con los pagos registrados,
+                                    no se escriben a mano.
+                                </div>
+                            </div>
 
-            <br>
+                        </div>
 
-            <div>
-                <label>Fecha de vencimiento:</label>
-                <input type="date"
-                       name="fechaVencimiento"
-                       th:value="${cuota.fechaVencimiento}"
-                       required>
-            </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-lg"></i> Guardar
+                            </button>
+                            <a class="btn btn-outline-secondary" th:href="@{/cuotas}">Cancelar</a>
+                        </div>
 
-            <br>
+                    </form>
 
-            <div>
-                <label>Estado:</label>
+                </div>
 
-                <select name="estado">
-                    <option th:each="e : ${estados}"
-                            th:value="${e}"
-                            th:text="${e}"
-                            th:selected="${cuota.estado == e}">
-                    </option>
-                </select>
-            </div>
+            </main>
 
-            <br>
+        </div>
 
-            <p th:if="${!esNuevo}">
-                <small>
-                    Lo pagado (Q<span th:text="${cuota.montoPagado}"></span>)
-                    y el saldo se calculan con los pagos registrados,
-                    no se escriben a mano.
-                </small>
-            </p>
+    </div>
 
-            <br>
-
-            <button type="submit">Guardar</button>
-
-            <a th:href="@{/cuotas}">Cancelar</a>
-
-        </form>
-
-    </main>
+    <div th:replace="~{fragments/layout :: scripts}"></div>
 
 </body>
 

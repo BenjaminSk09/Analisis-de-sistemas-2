@@ -1,102 +1,104 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulario de Pago</title>
-    <link rel="stylesheet" th:href="@{/css/estilos.css}">
-</head>
+<head th:replace="~{fragments/layout :: head('Formulario de Pago')}"></head>
 
 <body>
 
-    <header th:replace="~{fragments/comun :: barra}"></header>
+    <div class="app-shell">
 
-    <main class="contenedor">
+        <aside th:replace="~{fragments/layout :: sidebar('pagos')}"></aside>
 
-    <h1 class="titulo">Registrar Pago</h1>
+        <div class="app-main">
 
-    <p class="error" th:if="${error}" th:text="${error}"></p>
+            <header th:replace="~{fragments/layout :: topbar('Registrar Pago')}"></header>
 
-    <p th:if="${#lists.isEmpty(cuotas)}">
-        No hay cuotas pendientes de pago.
-        <a th:href="@{/cuotas/nuevo}">Registrar una cuota</a>.
-    </p>
+            <main class="app-content">
 
-    <form th:action="@{/pagos/guardar}"
-          method="post">
+                <div class="page-head">
+                    <h2>Registrar Pago</h2>
+                    <a class="btn btn-outline-secondary" th:href="@{/pagos}">
+                        <i class="bi bi-arrow-left"></i> Volver
+                    </a>
+                </div>
 
-        <div>
-            <label>Cuota:</label>
+                <div class="alert alert-danger" th:if="${error}" th:text="${error}"></div>
 
-            <select name="idCuota" required>
-                <option value="">Seleccione</option>
+                <div class="alert alert-info" th:if="${#lists.isEmpty(cuotas)}">
+                    No hay cuotas pendientes de pago.
+                    <a th:href="@{/cuotas/nuevo}">Registrar una cuota</a>.
+                </div>
 
-                <option th:each="cuota : ${cuotas}"
-                        th:value="${cuota.idCuota}"
-                        th:selected="${cuota.idCuota == cuotaIdSeleccionada}"
-                        th:text="${cuota.periodo
-                                + ' - Q' + cuota.monto
-                                + ' (saldo Q' + cuota.saldoPendiente + ')'}">
-                </option>
-            </select>
+                <div class="form-panel">
+
+                    <form th:action="@{/pagos/guardar}" method="post">
+
+                        <div class="row g-3">
+
+                            <div class="col-md-6">
+                                <label class="form-label" for="idCuota">Cuota</label>
+                                <select class="form-select" id="idCuota" name="idCuota" required>
+                                    <option value="">Seleccione</option>
+                                    <option th:each="cuota : ${cuotas}"
+                                            th:value="${cuota.idCuota}"
+                                            th:selected="${cuota.idCuota == cuotaIdSeleccionada}"
+                                            th:text="${cuota.periodo
+                                                    + ' - Q' + cuota.monto
+                                                    + ' (saldo Q' + cuota.saldoPendiente + ')'}">
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label" for="monto">Monto</label>
+                                <input type="number" class="form-control" id="monto" name="monto"
+                                       step="0.01"
+                                       min="0.01"
+                                       required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label" for="fechaPago">Fecha de pago</label>
+                                <input type="datetime-local" class="form-control" id="fechaPago" name="fechaPago">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label" for="metodoPago">Método de pago</label>
+                                <select class="form-select" id="metodoPago" name="metodoPago" required>
+                                    <option value="">Seleccione</option>
+                                    <option value="Efectivo">Efectivo</option>
+                                    <option value="Transferencia">Transferencia</option>
+                                    <option value="Tarjeta">Tarjeta</option>
+                                    <option value="Deposito">Depósito</option>
+                                </select>
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label" for="referencia">Referencia</label>
+                                <input type="text" class="form-control" id="referencia" name="referencia"
+                                       placeholder="No. de boleta, transferencia, etc.">
+                            </div>
+
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-lg"></i> Guardar
+                            </button>
+                            <a class="btn btn-outline-secondary" th:href="@{/pagos}">Cancelar</a>
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </main>
+
         </div>
 
-        <br>
+    </div>
 
-        <div>
-            <label>Monto:</label>
-            <input type="number"
-                   name="monto"
-                   step="0.01"
-                   min="0.01"
-                   required>
-        </div>
-
-        <br>
-
-        <div>
-            <label>Fecha de pago:</label>
-            <input type="datetime-local"
-                   name="fechaPago">
-        </div>
-
-        <br>
-
-        <div>
-            <label>Método de pago:</label>
-
-            <select name="metodoPago" required>
-                <option value="">Seleccione</option>
-                <option value="Efectivo">Efectivo</option>
-                <option value="Transferencia">Transferencia</option>
-                <option value="Tarjeta">Tarjeta</option>
-                <option value="Deposito">Depósito</option>
-            </select>
-        </div>
-
-        <br>
-
-        <div>
-            <label>Referencia:</label>
-            <input type="text"
-                   name="referencia"
-                   placeholder="No. de boleta, transferencia, etc.">
-        </div>
-
-        <br>
-
-        <button type="submit">
-            Guardar
-        </button>
-
-        <a th:href="@{/pagos}">
-            Cancelar
-        </a>
-
-    </form>
-
-    </main>
+    <div th:replace="~{fragments/layout :: scripts}"></div>
 
 </body>
 

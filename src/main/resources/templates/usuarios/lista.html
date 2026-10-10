@@ -1,90 +1,88 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Usuarios - Sistema de Condominio</title>
-    <link rel="stylesheet" th:href="@{/css/estilos.css}">
-</head>
+<head th:replace="~{fragments/layout :: head('Usuarios')}"></head>
 
 <body>
 
-    <header class="topbar">
-        <span class="marca">Sistema de Condominio</span>
-        <span class="sesion">
-            <span th:text="${session.usuario.nombreCompleto}"></span>
-            (<span th:text="${session.usuario.rol != null
-                    ? session.usuario.rol.nombre : 'Sin rol'}"></span>)
-            <a th:href="@{/dashboard}">Panel</a>
-            <a th:href="@{/logout}">Salir</a>
-        </span>
-    </header>
+    <div class="app-shell">
 
-    <main class="contenedor">
+        <aside th:replace="~{fragments/layout :: sidebar('usuarios')}"></aside>
 
-        <h1 class="titulo">Usuarios del sistema</h1>
+        <div class="app-main">
 
-        <p class="acciones-lista">
-            <a class="boton" th:href="@{/usuarios/nuevo}">Registrar nuevo usuario</a>
-        </p>
+            <header th:replace="~{fragments/layout :: topbar('Usuarios del sistema')}"></header>
 
-        <p class="error" th:if="${error}" th:text="${error}"></p>
+            <main class="app-content">
 
-        <table>
+                <div class="page-head">
+                    <h2>Usuarios</h2>
+                    <a class="btn btn-primary" th:href="@{/usuarios/nuevo}">
+                        <i class="bi bi-plus-lg"></i> Registrar nuevo usuario
+                    </a>
+                </div>
 
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Usuario</th>
-                    <th>Correo</th>
-                    <th>Rol</th>
-                    <th>Estado</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
+                <div class="alert alert-danger" th:if="${error}" th:text="${error}"></div>
 
-            <tbody>
+                <div class="empty-state" th:if="${#lists.isEmpty(usuarios)}">
+                    <i class="bi bi-person-badge empty-icon"></i>
+                    No hay usuarios registrados todavía.
+                </div>
 
-                <tr th:each="usuario : ${usuarios}">
+                <div class="table-wrap" th:unless="${#lists.isEmpty(usuarios)}">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Usuario</th>
+                                <th>Correo</th>
+                                <th>Rol</th>
+                                <th>Estado</th>
+                                <th class="text-end">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="usuario : ${usuarios}">
+                                <td th:text="${usuario.idUsuario}"></td>
+                                <td th:text="${usuario.nombreCompleto}"></td>
+                                <td th:text="${usuario.username}"></td>
+                                <td th:text="${usuario.correo}"></td>
+                                <td th:text="${usuario.rol != null ? usuario.rol.nombre : '-'}"></td>
+                                <td>
+                                    <span class="chip"
+                                          th:classappend="${usuario.estado} ? ' chip-success' : ' chip-neutral'"
+                                          th:text="${usuario.estado} ? 'Activo' : 'Inactivo'"></span>
+                                </td>
+                                <td class="cell-actions">
+                                    <a class="btn btn-sm btn-outline-secondary"
+                                       th:href="@{/usuarios/editar/{id}(id=${usuario.idUsuario})}"
+                                       title="Editar">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <form class="d-inline"
+                                          th:action="@{/usuarios/eliminar/{id}(id=${usuario.idUsuario})}"
+                                          method="post">
+                                        <button type="submit"
+                                                class="btn btn-sm btn-outline-danger"
+                                                title="Eliminar"
+                                                onclick="return confirm('¿Eliminar este usuario? Esta acción no se puede deshacer.')">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
 
-                    <td th:text="${usuario.idUsuario}"></td>
+            </main>
 
-                    <td th:text="${usuario.nombreCompleto}"></td>
+        </div>
 
-                    <td th:text="${usuario.username}"></td>
+    </div>
 
-                    <td th:text="${usuario.correo}"></td>
-
-                    <td th:text="${usuario.rol != null
-                            ? usuario.rol.nombre : '-'}"></td>
-
-                    <td th:text="${usuario.estado ? 'Activo' : 'Inactivo'}"></td>
-
-                    <td>
-                        <a th:href="@{/usuarios/editar/{id}(id=${usuario.idUsuario})}">
-                            Editar
-                        </a>
-
-                        <form class="accion-tabla"
-                              th:action="@{/usuarios/eliminar/{id}(id=${usuario.idUsuario})}"
-                              method="post">
-                            <button type="submit"
-                                    class="boton-chico peligro"
-                                    onclick="return confirm('¿Eliminar este usuario? Esta acción no se puede deshacer.')">
-                                Eliminar
-                            </button>
-                        </form>
-                    </td>
-
-                </tr>
-
-            </tbody>
-
-        </table>
-
-    </main>
+    <div th:replace="~{fragments/layout :: scripts}"></div>
 
 </body>
 

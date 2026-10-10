@@ -1,89 +1,90 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Relaciones Vivienda-Persona</title>
-    <link rel="stylesheet" th:href="@{/css/estilos.css}">
-</head>
+<head th:replace="~{fragments/layout :: head('Vivienda - Persona')}"></head>
 
 <body>
 
-    <header th:replace="~{fragments/comun :: barra}"></header>
+    <div class="app-shell">
 
-    <main class="contenedor">
+        <aside th:replace="~{fragments/layout :: sidebar('vivienda-persona')}"></aside>
 
-    <h1 class="titulo">Relaciones Vivienda - Persona</h1>
+        <div class="app-main">
 
-    <p class="acciones-lista">
-        <a class="boton" th:href="@{/vivienda-persona/nuevo}">Registrar nueva relación</a>
-    </p>
+            <header th:replace="~{fragments/layout :: topbar('Relaciones Vivienda - Persona')}"></header>
 
-    <p class="error" th:if="${error}" th:text="${error}"></p>
+            <main class="app-content">
 
-    <table>
-
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Vivienda</th>
-                <th>Persona</th>
-                <th>Tipo de relación</th>
-                <th>Fecha inicio</th>
-                <th>Fecha fin</th>
-                <th>Estado</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-
-        <tbody>
-
-            <tr th:each="relacion : ${relaciones}">
-
-                <td th:text="${relacion.idViviendaPersona}"></td>
-
-                <td th:text="${relacion.vivienda.numero + ' - Bloque ' + relacion.vivienda.bloque}">
-                </td>
-
-                <td th:text="${relacion.persona.nombres + ' ' + relacion.persona.apellidos}">
-                </td>
-
-                <td th:text="${relacion.tipoRelacion}"></td>
-
-                <td th:text="${relacion.fechaInicio}"></td>
-
-                <td th:text="${relacion.fechaFin != null ? relacion.fechaFin : 'Sin fecha'}">
-                </td>
-
-                <td th:text="${relacion.estado ? 'Activa' : 'Inactiva'}">
-                </td>
-
-                <td>
-
-                    <a th:href="@{/vivienda-persona/editar/{id}(id=${relacion.idViviendaPersona})}">
-                        Editar
+                <div class="page-head">
+                    <h2>Vivienda - Persona</h2>
+                    <a class="btn btn-primary" th:href="@{/vivienda-persona/nuevo}">
+                        <i class="bi bi-plus-lg"></i> Registrar nueva relación
                     </a>
+                </div>
 
-                    <form class="accion-tabla"
-                          th:action="@{/vivienda-persona/eliminar/{id}(id=${relacion.idViviendaPersona})}"
-                          method="post">
-                        <button type="submit"
-                                class="boton-chico peligro"
-                                onclick="return confirm('¿Eliminar esta asignación de vivienda? Esta acción no se puede deshacer.')">
-                            Eliminar
-                        </button>
-                    </form>
+                <div class="alert alert-danger" th:if="${error}" th:text="${error}"></div>
 
-                </td>
+                <div class="empty-state" th:if="${#lists.isEmpty(relaciones)}">
+                    <i class="bi bi-diagram-3 empty-icon"></i>
+                    No hay relaciones registradas todavía.
+                </div>
 
-            </tr>
+                <div class="table-wrap" th:unless="${#lists.isEmpty(relaciones)}">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Vivienda</th>
+                                <th>Persona</th>
+                                <th>Tipo de relación</th>
+                                <th>Fecha inicio</th>
+                                <th>Fecha fin</th>
+                                <th>Estado</th>
+                                <th class="text-end">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="relacion : ${relaciones}">
+                                <td th:text="${relacion.idViviendaPersona}"></td>
+                                <td th:text="${relacion.vivienda.numero + ' - Bloque ' + relacion.vivienda.bloque}"></td>
+                                <td th:text="${relacion.persona.nombres + ' ' + relacion.persona.apellidos}"></td>
+                                <td th:text="${relacion.tipoRelacion}"></td>
+                                <td th:text="${relacion.fechaInicio}"></td>
+                                <td th:text="${relacion.fechaFin != null ? relacion.fechaFin : 'Sin fecha'}"></td>
+                                <td>
+                                    <span class="chip"
+                                          th:classappend="${relacion.estado} ? ' chip-success' : ' chip-neutral'"
+                                          th:text="${relacion.estado} ? 'Activa' : 'Inactiva'"></span>
+                                </td>
+                                <td class="cell-actions">
+                                    <a class="btn btn-sm btn-outline-secondary"
+                                       th:href="@{/vivienda-persona/editar/{id}(id=${relacion.idViviendaPersona})}"
+                                       title="Editar">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <form class="d-inline"
+                                          th:action="@{/vivienda-persona/eliminar/{id}(id=${relacion.idViviendaPersona})}"
+                                          method="post">
+                                        <button type="submit"
+                                                class="btn btn-sm btn-outline-danger"
+                                                title="Eliminar"
+                                                onclick="return confirm('¿Eliminar esta asignación de vivienda? Esta acción no se puede deshacer.')">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
 
-        </tbody>
+            </main>
 
-    </table>
+        </div>
 
-    </main>
+    </div>
+
+    <div th:replace="~{fragments/layout :: scripts}"></div>
 
 </body>
 

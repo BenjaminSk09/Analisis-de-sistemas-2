@@ -1,119 +1,146 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulario de Vehículo</title>
-    <link rel="stylesheet" th:href="@{/css/estilos.css}">
-</head>
+<head th:replace="~{fragments/layout :: head('Formulario de Vehículo')}"></head>
 
 <body>
 
-    <header th:replace="~{fragments/comun :: barra}"></header>
+    <div class="app-shell">
 
-    <main class="contenedor">
+        <aside th:replace="~{fragments/layout :: sidebar('vehiculos')}"></aside>
 
-        <h1 class="titulo">Formulario de Vehículo</h1>
+        <div class="app-main">
 
-        <p class="error" th:if="${error}" th:text="${error}"></p>
+            <header th:replace="~{fragments/layout :: topbar('Formulario de Vehículo')}"></header>
 
-        <form class="formulario"
-              th:action="@{/vehiculos/guardar}"
-              method="post">
+            <main class="app-content">
 
-            <input type="hidden"
-                   name="idVehiculo"
-                   th:value="${vehiculo.idVehiculo}">
+                <div class="page-head">
+                    <h2>Formulario de Vehículo</h2>
+                    <a class="btn btn-outline-secondary" th:href="@{/vehiculos}">
+                        <i class="bi bi-arrow-left"></i> Volver
+                    </a>
+                </div>
 
-            <label>Vivienda:</label>
-            <select name="viviendaId" required>
-                <option value="">Seleccione una vivienda</option>
+                <div class="alert alert-danger" th:if="${error}" th:text="${error}"></div>
 
-                <option th:each="vivienda : ${viviendas}"
-                        th:value="${vivienda.idVivienda}"
-                        th:text="${vivienda.numero + ' - Bloque ' + vivienda.bloque}"
-                        th:selected="${vehiculo.vivienda != null
-                                and vehiculo.vivienda.idVivienda == vivienda.idVivienda}">
-                </option>
-            </select>
+                <div class="form-panel">
 
-            <label>Placa:</label>
-            <input type="text"
-                   name="placa"
-                   th:value="${vehiculo.placa}"
-                   maxlength="20"
-                   required>
+                    <form th:action="@{/vehiculos/guardar}" method="post">
 
-            <label>Marca:</label>
-            <input type="text"
-                   name="marca"
-                   th:value="${vehiculo.marca}"
-                   maxlength="50"
-                   required>
+                        <input type="hidden"
+                               name="idVehiculo"
+                               th:value="${vehiculo.idVehiculo}">
 
-            <label>Modelo:</label>
-            <input type="text"
-                   name="modelo"
-                   th:value="${vehiculo.modelo}"
-                   maxlength="50"
-                   required>
+                        <div class="row g-3">
 
-            <label>Color:</label>
-            <input type="text"
-                   name="color"
-                   th:value="${vehiculo.color}"
-                   maxlength="30"
-                   required>
+                            <div class="col-md-6">
+                                <label class="form-label" for="viviendaId">Vivienda</label>
+                                <select class="form-select" id="viviendaId" name="viviendaId" required>
+                                    <option value="">Seleccione una vivienda</option>
+                                    <option th:each="vivienda : ${viviendas}"
+                                            th:value="${vivienda.idVivienda}"
+                                            th:text="${vivienda.numero + ' - Bloque ' + vivienda.bloque}"
+                                            th:selected="${vehiculo.vivienda != null
+                                                    and vehiculo.vivienda.idVivienda == vivienda.idVivienda}">
+                                    </option>
+                                </select>
+                            </div>
 
-            <label>Tipo:</label>
-            <select name="tipo" required>
-                <option value="">Seleccione</option>
+                            <div class="col-md-6">
+                                <label class="form-label" for="placa">Placa</label>
+                                <input type="text" class="form-control" id="placa" name="placa"
+                                       th:value="${vehiculo.placa}"
+                                       maxlength="20"
+                                       required>
+                            </div>
 
-                <!-- El valor va sin tilde porque es el que guardan los
-                     datos originales de la base de datos -->
-                <option value="Automovil"
-                        th:selected="${vehiculo.tipo == 'Automovil'}">
-                    Automóvil
-                </option>
+                            <div class="col-md-6">
+                                <label class="form-label" for="marca">Marca</label>
+                                <input type="text" class="form-control" id="marca" name="marca"
+                                       th:value="${vehiculo.marca}"
+                                       maxlength="50"
+                                       required>
+                            </div>
 
-                <option value="Motocicleta"
-                        th:selected="${vehiculo.tipo == 'Motocicleta'}">
-                    Motocicleta
-                </option>
+                            <div class="col-md-6">
+                                <label class="form-label" for="modelo">Modelo</label>
+                                <input type="text" class="form-control" id="modelo" name="modelo"
+                                       th:value="${vehiculo.modelo}"
+                                       maxlength="50"
+                                       required>
+                            </div>
 
-                <option value="Pickup"
-                        th:selected="${vehiculo.tipo == 'Pickup'}">
-                    Pickup
-                </option>
+                            <div class="col-md-6">
+                                <label class="form-label" for="color">Color</label>
+                                <input type="text" class="form-control" id="color" name="color"
+                                       th:value="${vehiculo.color}"
+                                       maxlength="30"
+                                       required>
+                            </div>
 
-                <option value="Otro"
-                        th:selected="${vehiculo.tipo == 'Otro'}">
-                    Otro
-                </option>
-            </select>
+                            <div class="col-md-6">
+                                <label class="form-label" for="tipo">Tipo</label>
+                                <select class="form-select" id="tipo" name="tipo" required>
+                                    <option value="">Seleccione</option>
 
-            <label>Estado:</label>
-            <select name="estado" required>
-                <option value="true"
-                        th:selected="${vehiculo.estado == true}">
-                    Activo
-                </option>
+                                    <option value="Automovil"
+                                            th:selected="${vehiculo.tipo == 'Automovil'}">
+                                        Automóvil
+                                    </option>
 
-                <option value="false"
-                        th:selected="${vehiculo.estado == false}">
-                    Inactivo
-                </option>
-            </select>
+                                    <option value="Motocicleta"
+                                            th:selected="${vehiculo.tipo == 'Motocicleta'}">
+                                        Motocicleta
+                                    </option>
 
-            <div class="acciones">
-                <button type="submit" class="principal">Guardar</button>
-                <a th:href="@{/vehiculos}">Cancelar</a>
-            </div>
+                                    <option value="Pickup"
+                                            th:selected="${vehiculo.tipo == 'Pickup'}">
+                                        Pickup
+                                    </option>
 
-        </form>
+                                    <option value="Otro"
+                                            th:selected="${vehiculo.tipo == 'Otro'}">
+                                        Otro
+                                    </option>
+                                </select>
+                            </div>
 
-    </main>
+                            <div class="col-md-6">
+                                <label class="form-label" for="estadoVehiculo">Estado</label>
+                                <select class="form-select" id="estadoVehiculo" name="estado" required>
+                                    <option value="true"
+                                            th:selected="${vehiculo.estado == true}">
+                                        Activo
+                                    </option>
+
+                                    <option value="false"
+                                            th:selected="${vehiculo.estado == false}">
+                                        Inactivo
+                                    </option>
+                                </select>
+                            </div>
+
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-lg"></i> Guardar
+                            </button>
+                            <a class="btn btn-outline-secondary" th:href="@{/vehiculos}">Cancelar</a>
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </main>
+
+        </div>
+
+    </div>
+
+    <div th:replace="~{fragments/layout :: scripts}"></div>
 
 </body>
 

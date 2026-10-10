@@ -1,80 +1,92 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Personas - Sistema de Condominio</title>
-    <link rel="stylesheet" th:href="@{/css/estilos.css}">
-</head>
+<head th:replace="~{fragments/layout :: head('Personas')}"></head>
 
 <body>
 
-    <header th:replace="~{fragments/comun :: barra}"></header>
+    <div class="app-shell">
 
-    <main class="contenedor">
+        <aside th:replace="~{fragments/layout :: sidebar('personas')}"></aside>
 
-    <h1 class="titulo">Gestión de Personas</h1>
+        <div class="app-main">
 
-    <p class="acciones-lista">
-        <a class="boton" th:href="@{/personas/nuevo}">Registrar nueva persona</a>
-    </p>
+            <header th:replace="~{fragments/layout :: topbar('Gestión de Personas')}"></header>
 
-    <p class="error" th:if="${error}" th:text="${error}"></p>
+            <main class="app-content">
 
-    <table>
-
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nombres</th>
-                <th>Apellidos</th>
-                <th>DPI</th>
-                <th>Teléfono</th>
-                <th>Correo</th>
-                <th>Fecha de nacimiento</th>
-                <th>Estado</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-
-        <tbody>
-
-            <tr th:each="persona : ${personas}">
-
-                <td th:text="${persona.idPersona}"></td>
-                <td th:text="${persona.nombres}"></td>
-                <td th:text="${persona.apellidos}"></td>
-                <td th:text="${persona.dpi}"></td>
-                <td th:text="${persona.telefono}"></td>
-                <td th:text="${persona.correo}"></td>
-                <td th:text="${persona.fechaNacimiento}"></td>
-
-                <td th:text="${persona.estado ? 'Activa' : 'Inactiva'}"></td>
-
-                <td>
-                    <a th:href="@{/personas/editar/{id}(id=${persona.idPersona})}">
-                        Editar
+                <div class="page-head">
+                    <h2>Personas</h2>
+                    <a class="btn btn-primary" th:href="@{/personas/nuevo}">
+                        <i class="bi bi-plus-lg"></i> Registrar nueva persona
                     </a>
+                </div>
 
-                    <form class="accion-tabla"
-                          th:action="@{/personas/eliminar/{id}(id=${persona.idPersona})}"
-                          method="post">
-                        <button type="submit"
-                                class="boton-chico peligro"
-                                onclick="return confirm('¿Eliminar este registro de persona? Esta acción no se puede deshacer.')">
-                            Eliminar
-                        </button>
-                    </form>
-                </td>
+                <div class="alert alert-danger" th:if="${error}" th:text="${error}"></div>
 
-            </tr>
+                <div class="empty-state" th:if="${#lists.isEmpty(personas)}">
+                    <i class="bi bi-people empty-icon"></i>
+                    No hay personas registradas todavía.
+                </div>
 
-        </tbody>
+                <div class="table-wrap" th:unless="${#lists.isEmpty(personas)}">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombres</th>
+                                <th>Apellidos</th>
+                                <th>DPI</th>
+                                <th>Teléfono</th>
+                                <th>Correo</th>
+                                <th>Nacimiento</th>
+                                <th>Estado</th>
+                                <th class="text-end">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="persona : ${personas}">
+                                <td th:text="${persona.idPersona}"></td>
+                                <td th:text="${persona.nombres}"></td>
+                                <td th:text="${persona.apellidos}"></td>
+                                <td th:text="${persona.dpi}"></td>
+                                <td th:text="${persona.telefono}"></td>
+                                <td th:text="${persona.correo}"></td>
+                                <td th:text="${persona.fechaNacimiento}"></td>
+                                <td>
+                                    <span class="chip"
+                                          th:classappend="${persona.estado} ? ' chip-success' : ' chip-neutral'"
+                                          th:text="${persona.estado} ? 'Activa' : 'Inactiva'"></span>
+                                </td>
+                                <td class="cell-actions">
+                                    <a class="btn btn-sm btn-outline-secondary"
+                                       th:href="@{/personas/editar/{id}(id=${persona.idPersona})}"
+                                       title="Editar">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <form class="d-inline"
+                                          th:action="@{/personas/eliminar/{id}(id=${persona.idPersona})}"
+                                          method="post">
+                                        <button type="submit"
+                                                class="btn btn-sm btn-outline-danger"
+                                                title="Eliminar"
+                                                onclick="return confirm('¿Eliminar este registro de persona? Esta acción no se puede deshacer.')">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
 
-    </table>
+            </main>
 
-    </main>
+        </div>
+
+    </div>
+
+    <div th:replace="~{fragments/layout :: scripts}"></div>
 
 </body>
 

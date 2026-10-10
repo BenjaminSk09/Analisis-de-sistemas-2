@@ -1,51 +1,66 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iniciar sesión - Sistema de Condominio</title>
-    <link rel="stylesheet" th:href="@{/css/estilos.css}">
-</head>
+<head th:replace="~{fragments/layout :: head('Iniciar sesión')}"></head>
 
-<body class="login-page">
+<body>
 
-    <div class="login-card">
+    <button type="button" class="btn-icon login-theme" id="btnTheme" aria-label="Cambiar tema">
+        <i id="themeIcon" class="bi bi-moon-stars"></i>
+    </button>
 
-        <h1>Sistema de Condominio</h1>
-        <h2>Iniciar sesión</h2>
+    <div class="login-wrap">
 
-        <p class="error" th:if="${error}" th:text="${error}"></p>
+        <div class="login-card">
 
-        <p class="ok" th:if="${param.logout}">
-            Sesión cerrada correctamente.
-        </p>
+            <div class="login-brand">
+                <i class="bi bi-buildings"></i>
+                <span>Sistema de Condominio</span>
+            </div>
 
-        <form th:action="@{/login}" method="post">
+            <p class="login-sub">Inicia sesión para continuar</p>
 
-            <label for="usuario">Usuario</label>
-            <input type="text"
-                   id="usuario"
-                   name="usuario"
-                   th:value="${usuario}"
-                   autocomplete="username"
-                   autofocus
-                   required>
+            <div class="alert alert-danger py-2" th:if="${error}" th:text="${error}"></div>
 
-            <label for="clave">Contraseña</label>
-            <input type="password"
-                   id="clave"
-                   name="clave"
-                   autocomplete="current-password"
-                   required>
+            <div class="alert alert-success py-2" th:if="${param.logout}">
+                Sesión cerrada correctamente.
+            </div>
 
-            <button type="submit">
-                Entrar
-            </button>
+            <form th:action="@{/login}" method="post">
 
-        </form>
+                <div class="mb-3">
+                    <label class="form-label" for="usuario">Usuario</label>
+                    <input class="form-control"
+                           type="text"
+                           id="usuario"
+                           name="usuario"
+                           th:value="${usuario}"
+                           autocomplete="username"
+                           autofocus
+                           required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label" for="clave">Contraseña</label>
+                    <input class="form-control"
+                           type="password"
+                           id="clave"
+                           name="clave"
+                           autocomplete="current-password"
+                           required>
+                </div>
+
+                <button class="btn btn-primary w-100" type="submit">
+                    Entrar
+                </button>
+
+            </form>
+
+        </div>
 
     </div>
+
+    <div th:replace="~{fragments/layout :: scripts}"></div>
 
 </body>
 

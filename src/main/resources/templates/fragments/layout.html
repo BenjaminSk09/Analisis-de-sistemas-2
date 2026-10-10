@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head th:fragment="head(titulo)">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${titulo} + ' - Sistema de Condominio'">Sistema de Condominio</title>
+
+    <link rel="stylesheet" th:href="@{/vendor/bootstrap/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/vendor/bootstrap-icons/bootstrap-icons.min.css}">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+
+    <script th:inline="none">
+        (function () {
+            var tema = localStorage.getItem('sgac-theme')
+                || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            document.documentElement.setAttribute('data-bs-theme', tema);
+            if (localStorage.getItem('sgac-sidebar') === '1') {
+                document.documentElement.classList.add('sidebar-collapsed');
+            }
+        })();
+    </script>
+
+</head>
+
+<body>
+
+    <aside class="sidebar" th:fragment="sidebar(activo)">
+
+        <a class="sidebar-brand" th:href="@{/dashboard}">
+            <i class="bi bi-buildings"></i>
+            <span class="sidebar-brand-text">Condominio</span>
+        </a>
+
+        <nav class="sidebar-nav">
+
+            <a class="sidebar-item"
+               th:classappend="${activo == 'dashboard'} ? ' active' : ''"
+               th:href="@{/dashboard}"
+               title="Panel">
+                <i class="bi bi-grid-1x2"></i>
+                <span class="sidebar-item-text">Panel</span>
+            </a>
+
+            <div class="sidebar-section">Gestión</div>
+
+            <a class="sidebar-item"
+               th:classappend="${activo == 'personas'} ? ' active' : ''"
+               th:href="@{/personas}"
+               title="Personas">
+                <i class="bi bi-people"></i>
+                <span class="sidebar-item-text">Personas</span>
+            </a>
+
+            <a class="sidebar-item"
+               th:classappend="${activo == 'viviendas'} ? ' active' : ''"
+               th:href="@{/viviendas}"
+               title="Viviendas">
+                <i class="bi bi-house-door"></i>
+                <span class="sidebar-item-text">Viviendas</span>
+            </a>
+
+            <a class="sidebar-item"
+               th:classappend="${activo == 'vehiculos'} ? ' active' : ''"
+               th:href="@{/vehiculos}"
+               title="Vehículos">
+                <i class="bi bi-car-front"></i>
+                <span class="sidebar-item-text">Vehículos</span>
+            </a>
+
+            <a class="sidebar-item"
+               th:classappend="${activo == 'vivienda-persona'} ? ' active' : ''"
+               th:href="@{/vivienda-persona}"
+               title="Vivienda - Persona">
+                <i class="bi bi-diagram-3"></i>
+                <span class="sidebar-item-text">Vivienda - Persona</span>
+            </a>
+
+            <a class="sidebar-item"
+               th:classappend="${activo == 'cuotas'} ? ' active' : ''"
+               th:href="@{/cuotas}"
+               title="Cuotas">
+                <i class="bi bi-receipt"></i>
+                <span class="sidebar-item-text">Cuotas</span>
+            </a>
+
+            <a class="sidebar-item"
+               th:classappend="${activo == 'pagos'} ? ' active' : ''"
+               th:href="@{/pagos}"
+               title="Pagos">
+                <i class="bi bi-cash-coin"></i>
+                <span class="sidebar-item-text">Pagos</span>
+            </a>
+
+            <a class="sidebar-item"
+               th:classappend="${activo == 'notificaciones'} ? ' active' : ''"
+               th:href="@{/notificaciones}"
+               title="Notificaciones">
+                <i class="bi bi-bell"></i>
+                <span class="sidebar-item-text">Notificaciones</span>
+            </a>
+
+            <th:block th:if="${session.usuario != null
+                    and session.usuario.rol != null
+                    and session.usuario.rol.esAdministrador()}">
+
+                <div class="sidebar-section">Administración</div>
+
+                <a class="sidebar-item"
+                   th:classappend="${activo == 'usuarios'} ? ' active' : ''"
+                   th:href="@{/usuarios}"
+                   title="Usuarios">
+                    <i class="bi bi-person-badge"></i>
+                    <span class="sidebar-item-text">Usuarios</span>
+                </a>
+
+            </th:block>
+
+        </nav>
+
+        <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+    </aside>
+
+    <header class="topbar" th:fragment="topbar(titulo)">
+
+        <button type="button" class="btn-icon" id="btnSidebar" aria-label="Mostrar u ocultar menú">
+            <i class="bi bi-list"></i>
+        </button>
+
+        <h1 class="topbar-title" th:text="${titulo}">Página</h1>
+
+        <div class="topbar-actions">
+
+            <button type="button" class="btn-icon" id="btnTheme" aria-label="Cambiar tema">
+                <i id="themeIcon" class="bi bi-moon-stars"></i>
+            </button>
+
+            <div class="topbar-user d-none d-sm-block">
+                <div class="topbar-user-name"
+                     th:text="${session.usuario != null ? session.usuario.nombreCompleto : ''}"></div>
+                <div class="topbar-user-role"
+                     th:text="${session.usuario != null
+                             and session.usuario.rol != null
+                             ? session.usuario.rol.nombre : ''}"></div>
+            </div>
+
+            <a class="btn btn-sm btn-outline-secondary" th:href="@{/logout}">
+                <i class="bi bi-box-arrow-right"></i>
+                <span class="d-none d-sm-inline ms-1">Salir</span>
+            </a>
+
+        </div>
+
+    </header>
+
+    <th:block th:fragment="scripts">
+        <script th:src="@{/vendor/bootstrap/bootstrap.bundle.min.js}"></script>
+        <script th:src="@{/js/app.js}"></script>
+    </th:block>
+
+</body>
+
+</html>

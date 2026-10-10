@@ -1,64 +1,95 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulario de Vivienda</title>
-    <link rel="stylesheet" th:href="@{/css/estilos.css}">
-</head>
+<head th:replace="~{fragments/layout :: head('Formulario de Vivienda')}"></head>
 
 <body>
 
-    <header th:replace="~{fragments/comun :: barra}"></header>
+    <div class="app-shell">
 
-    <main class="contenedor">
+        <aside th:replace="~{fragments/layout :: sidebar('viviendas')}"></aside>
 
-        <h1 class="titulo">Formulario de Vivienda</h1>
+        <div class="app-main">
 
-        <p class="error" th:if="${error}" th:text="${error}"></p>
+            <header th:replace="~{fragments/layout :: topbar('Formulario de Vivienda')}"></header>
 
-        <form class="formulario"
-              th:action="@{/viviendas/guardar}"
-              th:object="${vivienda}"
-              method="post">
+            <main class="app-content">
 
-            <input type="hidden" th:field="*{idVivienda}">
+                <div class="page-head">
+                    <h2>Formulario de Vivienda</h2>
+                    <a class="btn btn-outline-secondary" th:href="@{/viviendas}">
+                        <i class="bi bi-arrow-left"></i> Volver
+                    </a>
+                </div>
 
-            <label>Número:</label>
-            <input type="text"
-                   th:field="*{numero}"
-                   maxlength="20"
-                   required>
+                <div class="alert alert-danger" th:if="${error}" th:text="${error}"></div>
 
-            <label>Bloque:</label>
-            <input type="text"
-                   th:field="*{bloque}"
-                   maxlength="20"
-                   required>
+                <div class="form-panel">
 
-            <label>Dirección:</label>
-            <input type="text"
-                   th:field="*{direccion}"
-                   maxlength="200"
-                   required>
+                    <form th:action="@{/viviendas/guardar}"
+                          th:object="${vivienda}"
+                          method="post">
 
-            <label>Estado:</label>
-            <select th:field="*{estado}" required>
-                <option value="">Seleccione</option>
-                <option value="Ocupada">Ocupada</option>
-                <option value="Disponible">Disponible</option>
-                <option value="Mantenimiento">Mantenimiento</option>
-            </select>
+                        <input type="hidden" th:field="*{idVivienda}">
 
-            <div class="acciones">
-                <button type="submit" class="principal">Guardar</button>
-                <a th:href="@{/viviendas}">Cancelar</a>
-            </div>
+                        <div class="row g-3">
 
-        </form>
+                            <div class="col-md-6">
+                                <label class="form-label" for="numero">Número</label>
+                                <input type="text" class="form-control"
+                                       th:field="*{numero}"
+                                       maxlength="20"
+                                       required>
+                            </div>
 
-    </main>
+                            <div class="col-md-6">
+                                <label class="form-label" for="bloque">Bloque</label>
+                                <input type="text" class="form-control"
+                                       th:field="*{bloque}"
+                                       maxlength="20"
+                                       required>
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label" for="direccion">Dirección</label>
+                                <input type="text" class="form-control"
+                                       th:field="*{direccion}"
+                                       maxlength="200"
+                                       required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label" for="estado">Estado</label>
+                                <select class="form-select"
+                                        th:field="*{estado}"
+                                        required>
+                                    <option value="">Seleccione</option>
+                                    <option value="Ocupada">Ocupada</option>
+                                    <option value="Disponible">Disponible</option>
+                                    <option value="Mantenimiento">Mantenimiento</option>
+                                </select>
+                            </div>
+
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-lg"></i> Guardar
+                            </button>
+                            <a class="btn btn-outline-secondary" th:href="@{/viviendas}">Cancelar</a>
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </main>
+
+        </div>
+
+    </div>
+
+    <div th:replace="~{fragments/layout :: scripts}"></div>
 
 </body>
 

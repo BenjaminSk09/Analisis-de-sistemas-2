@@ -1,0 +1,574 @@
+/* ==========================================================================
+   Sistema de Condominio - hoja de estilos propia sobre Bootstrap 5
+   ========================================================================== */
+
+:root {
+    --sgac-accent: #2563eb;
+    --sgac-accent-hover: #1d4ed8;
+    --sgac-radius: 10px;
+    --sgac-sidebar-w: 256px;
+    --sgac-sidebar-w-collapsed: 64px;
+    --sgac-topbar-h: 56px;
+}
+
+[data-bs-theme="light"] {
+    --sgac-bg: #f1f5f9;
+    --sgac-surface: #ffffff;
+    --sgac-border: #e2e8f0;
+    --sgac-text: #1f2937;
+    --sgac-muted: #64748b;
+    --sgac-sidebar: #0f172a;
+    --sgac-sidebar-text: #cbd5e1;
+    --sgac-sidebar-hover: rgba(255, 255, 255, 0.08);
+    --sgac-sidebar-active: rgba(37, 99, 235, 0.22);
+    --sgac-sidebar-active-bar: #3b82f6;
+}
+
+[data-bs-theme="dark"] {
+    --sgac-bg: #0b1120;
+    --sgac-surface: #111827;
+    --sgac-border: #1f2937;
+    --sgac-text: #e5e7eb;
+    --sgac-muted: #94a3b8;
+    --sgac-sidebar: #0b1120;
+    --sgac-sidebar-text: #94a3b8;
+    --sgac-sidebar-hover: rgba(255, 255, 255, 0.06);
+    --sgac-sidebar-active: rgba(59, 130, 246, 0.25);
+    --sgac-sidebar-active-bar: #60a5fa;
+}
+
+body {
+    background: var(--sgac-bg);
+    color: var(--sgac-text);
+    font-size: 14px;
+}
+
+a {
+    text-decoration: none;
+}
+
+/* --------------------------------------------------------------------------
+   Estructura general (shell)
+   -------------------------------------------------------------------------- */
+
+.app-shell {
+    display: grid;
+    grid-template-columns: var(--sgac-sidebar-w) minmax(0, 1fr);
+    min-height: 100dvh;
+}
+
+html.sidebar-collapsed .app-shell {
+    grid-template-columns: var(--sgac-sidebar-w-collapsed) minmax(0, 1fr);
+}
+
+.app-main {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.app-content {
+    flex: 1;
+    padding: 24px;
+    min-width: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Barra lateral
+   -------------------------------------------------------------------------- */
+
+.sidebar {
+    position: sticky;
+    top: 0;
+    height: 100dvh;
+    background: var(--sgac-sidebar);
+    color: var(--sgac-sidebar-text);
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    z-index: 1045;
+}
+
+.sidebar-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: var(--sgac-topbar-h);
+    padding: 0 18px;
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 16px;
+    white-space: nowrap;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.sidebar-brand i {
+    font-size: 20px;
+    color: #60a5fa;
+    flex: 0 0 auto;
+}
+
+.sidebar-nav {
+    padding: 12px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.sidebar-section {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--sgac-sidebar-text);
+    opacity: 0.7;
+    padding: 16px 12px 6px;
+    white-space: nowrap;
+}
+
+.sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    height: 40px;
+    padding: 0 12px;
+    border-radius: 8px;
+    color: var(--sgac-sidebar-text);
+    font-size: 14px;
+    white-space: nowrap;
+    position: relative;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.sidebar-item i {
+    font-size: 18px;
+    flex: 0 0 20px;
+    text-align: center;
+}
+
+.sidebar-item:hover {
+    background: var(--sgac-sidebar-hover);
+    color: #ffffff;
+}
+
+.sidebar-item.active {
+    background: var(--sgac-sidebar-active);
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.sidebar-item.active::before {
+    content: "";
+    position: absolute;
+    left: -8px;
+    top: 8px;
+    bottom: 8px;
+    width: 3px;
+    border-radius: 0 3px 3px 0;
+    background: var(--sgac-sidebar-active-bar);
+}
+
+/* Estado colapsado (solo iconos) */
+html.sidebar-collapsed .sidebar-brand-text,
+html.sidebar-collapsed .sidebar-item-text,
+html.sidebar-collapsed .sidebar-section {
+    display: none;
+}
+
+html.sidebar-collapsed .sidebar-brand {
+    justify-content: center;
+    padding: 0;
+}
+
+html.sidebar-collapsed .sidebar-item {
+    justify-content: center;
+    padding: 0;
+}
+
+.sidebar-backdrop {
+    display: none;
+}
+
+/* --------------------------------------------------------------------------
+   Barra superior
+   -------------------------------------------------------------------------- */
+
+.topbar {
+    position: sticky;
+    top: 0;
+    z-index: 1030;
+    height: var(--sgac-topbar-h);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 0 20px;
+    background: var(--sgac-surface);
+    border-bottom: 1px solid var(--sgac-border);
+}
+
+.topbar-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.topbar-actions {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.topbar-user {
+    text-align: right;
+    line-height: 1.15;
+}
+
+.topbar-user-name {
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.topbar-user-role {
+    font-size: 11px;
+    color: var(--sgac-muted);
+}
+
+.btn-icon {
+    border: 1px solid var(--sgac-border);
+    background: transparent;
+    color: var(--sgac-text);
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.btn-icon:hover {
+    background: var(--sgac-bg);
+}
+
+/* --------------------------------------------------------------------------
+   Encabezado de página
+   -------------------------------------------------------------------------- */
+
+.page-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.page-head h2 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+/* --------------------------------------------------------------------------
+   Paneles y tarjetas KPI
+   -------------------------------------------------------------------------- */
+
+.panel {
+    background: var(--sgac-surface);
+    border: 1px solid var(--sgac-border);
+    border-radius: var(--sgac-radius);
+    padding: 20px;
+}
+
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 28px;
+}
+
+.kpi {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    background: var(--sgac-surface);
+    border: 1px solid var(--sgac-border);
+    border-radius: var(--sgac-radius);
+    padding: 18px 20px;
+    color: var(--sgac-text);
+    transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease;
+}
+
+a.kpi:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 22px rgba(15, 23, 42, 0.12);
+    border-color: var(--sgac-accent);
+    color: var(--sgac-text);
+}
+
+.kpi-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 9px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    background: rgba(37, 99, 235, 0.12);
+    color: var(--sgac-accent);
+}
+
+.kpi-value {
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+}
+
+.kpi-label {
+    font-size: 13px;
+    color: var(--sgac-muted);
+}
+
+/* --------------------------------------------------------------------------
+   Chips de estado
+   -------------------------------------------------------------------------- */
+
+.chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.chip-success { background: rgba(22, 163, 74, 0.14); color: #16a34a; }
+.chip-warn    { background: rgba(217, 119, 6, 0.16);  color: #d97706; }
+.chip-danger  { background: rgba(220, 38, 38, 0.14);  color: #dc2626; }
+.chip-info    { background: rgba(37, 99, 235, 0.14);  color: #2563eb; }
+.chip-neutral { background: rgba(100, 116, 139, 0.16); color: #64748b; }
+
+[data-bs-theme="dark"] .chip-success { color: #4ade80; }
+[data-bs-theme="dark"] .chip-warn    { color: #fbbf24; }
+[data-bs-theme="dark"] .chip-danger  { color: #f87171; }
+[data-bs-theme="dark"] .chip-info    { color: #60a5fa; }
+[data-bs-theme="dark"] .chip-neutral { color: #94a3b8; }
+
+/* --------------------------------------------------------------------------
+   Tablas
+   -------------------------------------------------------------------------- */
+
+.table-wrap {
+    background: var(--sgac-surface);
+    border: 1px solid var(--sgac-border);
+    border-radius: var(--sgac-radius);
+    overflow: auto;
+}
+
+.table-wrap .table {
+    margin: 0;
+}
+
+.table thead th {
+    background: var(--sgac-surface);
+    border-bottom: 1px solid var(--sgac-border);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--sgac-muted);
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.table td {
+    vertical-align: middle;
+    height: 48px;
+    font-size: 14px;
+    border-color: var(--sgac-border);
+}
+
+.table tbody tr:hover td {
+    background: rgba(37, 99, 235, 0.05);
+}
+
+.cell-actions {
+    white-space: nowrap;
+    text-align: right;
+}
+
+.cell-actions > * {
+    vertical-align: middle;
+}
+
+/* --------------------------------------------------------------------------
+   Estado vacío
+   -------------------------------------------------------------------------- */
+
+.empty-state {
+    text-align: center;
+    padding: 56px 24px;
+    color: var(--sgac-muted);
+    background: var(--sgac-surface);
+    border: 1px dashed var(--sgac-border);
+    border-radius: var(--sgac-radius);
+}
+
+.empty-state .empty-icon {
+    font-size: 42px;
+    color: var(--sgac-border);
+    display: block;
+    margin-bottom: 10px;
+}
+
+/* --------------------------------------------------------------------------
+   Formularios
+   -------------------------------------------------------------------------- */
+
+.form-panel {
+    background: var(--sgac-surface);
+    border: 1px solid var(--sgac-border);
+    border-radius: var(--sgac-radius);
+    padding: 24px;
+    max-width: 760px;
+}
+
+.form-panel .form-label {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.form-panel .form-text {
+    font-size: 12px;
+}
+
+.form-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--sgac-border);
+}
+
+/* --------------------------------------------------------------------------
+   Login
+   -------------------------------------------------------------------------- */
+
+.login-wrap {
+    min-height: 100dvh;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+    background: radial-gradient(circle at 20% 20%, #1e3a8a, #0f172a 70%);
+}
+
+.login-card {
+    width: 100%;
+    max-width: 400px;
+    background: var(--sgac-surface);
+    border: 1px solid var(--sgac-border);
+    border-radius: 14px;
+    padding: 32px;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+}
+
+.login-brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.login-brand i {
+    color: var(--sgac-accent);
+}
+
+.login-sub {
+    text-align: center;
+    color: var(--sgac-muted);
+    font-size: 14px;
+    margin-bottom: 24px;
+}
+
+.login-theme {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.25);
+    color: #ffffff;
+}
+
+.login-theme:hover {
+    background: rgba(255, 255, 255, 0.22);
+}
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 991.98px) {
+
+    .app-shell,
+    html.sidebar-collapsed .app-shell {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: var(--sgac-sidebar-w);
+        transform: translateX(-100%);
+        transition: transform 0.2s ease;
+    }
+
+    html.sidebar-collapsed .sidebar-brand-text,
+    html.sidebar-collapsed .sidebar-item-text {
+        display: inline;
+    }
+
+    html.sidebar-collapsed .sidebar-section {
+        display: block;
+    }
+
+    html.sidebar-collapsed .sidebar-brand {
+        justify-content: flex-start;
+        padding: 0 18px;
+    }
+
+    html.sidebar-collapsed .sidebar-item {
+        justify-content: flex-start;
+        padding: 0 12px;
+    }
+
+    body.sidebar-open .sidebar {
+        transform: none;
+    }
+
+    body.sidebar-open .sidebar-backdrop {
+        display: block;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1040;
+    }
+
+    .app-content {
+        padding: 16px;
+    }
+}

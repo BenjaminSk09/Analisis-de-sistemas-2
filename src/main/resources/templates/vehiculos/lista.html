@@ -1,90 +1,92 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vehículos - Sistema de Condominio</title>
-    <link rel="stylesheet" th:href="@{/css/estilos.css}">
-</head>
+<head th:replace="~{fragments/layout :: head('Vehículos')}"></head>
 
 <body>
 
-    <header th:replace="~{fragments/comun :: barra}"></header>
+    <div class="app-shell">
 
-    <main class="contenedor">
+        <aside th:replace="~{fragments/layout :: sidebar('vehiculos')}"></aside>
 
-    <h1 class="titulo">Gestión de Vehículos</h1>
+        <div class="app-main">
 
-    <p class="acciones-lista">
-        <a class="boton" th:href="@{/vehiculos/nuevo}">Registrar nuevo vehículo</a>
-    </p>
+            <header th:replace="~{fragments/layout :: topbar('Gestión de Vehículos')}"></header>
 
-    <p class="error" th:if="${error}" th:text="${error}"></p>
+            <main class="app-content">
 
-    <table>
-
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Vivienda</th>
-                <th>Placa</th>
-                <th>Marca</th>
-                <th>Modelo</th>
-                <th>Color</th>
-                <th>Tipo</th>
-                <th>Estado</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-
-        <tbody>
-
-            <tr th:each="vehiculo : ${vehiculos}">
-
-                <td th:text="${vehiculo.idVehiculo}"></td>
-
-                <td th:text="${vehiculo.vivienda.numero + ' - Bloque ' + vehiculo.vivienda.bloque}">
-                </td>
-
-                <td th:text="${vehiculo.placa}"></td>
-
-                <td th:text="${vehiculo.marca}"></td>
-
-                <td th:text="${vehiculo.modelo}"></td>
-
-                <td th:text="${vehiculo.color}"></td>
-
-                <td th:text="${vehiculo.tipo}"></td>
-
-                <td th:text="${vehiculo.estado ? 'Activo' : 'Inactivo'}">
-                </td>
-
-                <td>
-
-                    <a th:href="@{/vehiculos/editar/{id}(id=${vehiculo.idVehiculo})}">
-                        Editar
+                <div class="page-head">
+                    <h2>Vehículos</h2>
+                    <a class="btn btn-primary" th:href="@{/vehiculos/nuevo}">
+                        <i class="bi bi-plus-lg"></i> Registrar nuevo vehículo
                     </a>
+                </div>
 
-                    <form class="accion-tabla"
-                          th:action="@{/vehiculos/eliminar/{id}(id=${vehiculo.idVehiculo})}"
-                          method="post">
-                        <button type="submit"
-                                class="boton-chico peligro"
-                                onclick="return confirm('¿Eliminar este vehículo? Esta acción no se puede deshacer.')">
-                            Eliminar
-                        </button>
-                    </form>
+                <div class="alert alert-danger" th:if="${error}" th:text="${error}"></div>
 
-                </td>
+                <div class="empty-state" th:if="${#lists.isEmpty(vehiculos)}">
+                    <i class="bi bi-car-front empty-icon"></i>
+                    No hay vehículos registrados todavía.
+                </div>
 
-            </tr>
+                <div class="table-wrap" th:unless="${#lists.isEmpty(vehiculos)}">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Vivienda</th>
+                                <th>Placa</th>
+                                <th>Marca</th>
+                                <th>Modelo</th>
+                                <th>Color</th>
+                                <th>Tipo</th>
+                                <th>Estado</th>
+                                <th class="text-end">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="vehiculo : ${vehiculos}">
+                                <td th:text="${vehiculo.idVehiculo}"></td>
+                                <td th:text="${vehiculo.vivienda.numero + ' - Bloque ' + vehiculo.vivienda.bloque}"></td>
+                                <td th:text="${vehiculo.placa}"></td>
+                                <td th:text="${vehiculo.marca}"></td>
+                                <td th:text="${vehiculo.modelo}"></td>
+                                <td th:text="${vehiculo.color}"></td>
+                                <td th:text="${vehiculo.tipo}"></td>
+                                <td>
+                                    <span class="chip"
+                                          th:classappend="${vehiculo.estado} ? ' chip-success' : ' chip-neutral'"
+                                          th:text="${vehiculo.estado} ? 'Activo' : 'Inactivo'"></span>
+                                </td>
+                                <td class="cell-actions">
+                                    <a class="btn btn-sm btn-outline-secondary"
+                                       th:href="@{/vehiculos/editar/{id}(id=${vehiculo.idVehiculo})}"
+                                       title="Editar">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <form class="d-inline"
+                                          th:action="@{/vehiculos/eliminar/{id}(id=${vehiculo.idVehiculo})}"
+                                          method="post">
+                                        <button type="submit"
+                                                class="btn btn-sm btn-outline-danger"
+                                                title="Eliminar"
+                                                onclick="return confirm('¿Eliminar este vehículo? Esta acción no se puede deshacer.')">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
 
-        </tbody>
+            </main>
 
-    </table>
+        </div>
 
-    </main>
+    </div>
+
+    <div th:replace="~{fragments/layout :: scripts}"></div>
 
 </body>
 

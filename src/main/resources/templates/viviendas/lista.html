@@ -1,80 +1,86 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Viviendas - Sistema de Condominio</title>
-    <link rel="stylesheet" th:href="@{/css/estilos.css}">
-</head>
+<head th:replace="~{fragments/layout :: head('Viviendas')}"></head>
 
 <body>
 
-    <header th:replace="~{fragments/comun :: barra}"></header>
+    <div class="app-shell">
 
-    <main class="contenedor">
+        <aside th:replace="~{fragments/layout :: sidebar('viviendas')}"></aside>
 
-    <h1 class="titulo">Gestión de Viviendas</h1>
+        <div class="app-main">
 
-    <p class="acciones-lista">
-        <a class="boton" th:href="@{/viviendas/nuevo}">Registrar nueva vivienda</a>
-    </p>
+            <header th:replace="~{fragments/layout :: topbar('Gestión de Viviendas')}"></header>
 
-    <p class="error" th:if="${error}" th:text="${error}"></p>
+            <main class="app-content">
 
-    <table>
-
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Número</th>
-                <th>Bloque</th>
-                <th>Dirección</th>
-                <th>Estado</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-
-        <tbody>
-
-            <tr th:each="vivienda : ${viviendas}">
-
-                <td th:text="${vivienda.idVivienda}"></td>
-
-                <td th:text="${vivienda.numero}"></td>
-
-                <td th:text="${vivienda.bloque}"></td>
-
-                <td th:text="${vivienda.direccion}"></td>
-
-                <td th:text="${vivienda.estado}"></td>
-
-                <td>
-
-                    <a th:href="@{/viviendas/editar/{id}(id=${vivienda.idVivienda})}">
-                        Editar
+                <div class="page-head">
+                    <h2>Viviendas</h2>
+                    <a class="btn btn-primary" th:href="@{/viviendas/nuevo}">
+                        <i class="bi bi-plus-lg"></i> Registrar nueva vivienda
                     </a>
+                </div>
 
-                    <form class="accion-tabla"
-                          th:action="@{/viviendas/eliminar/{id}(id=${vivienda.idVivienda})}"
-                          method="post">
-                        <button type="submit"
-                                class="boton-chico peligro"
-                                onclick="return confirm('¿Eliminar esta vivienda? Puede quedar registrada en cuotas y pagos. Esta acción no se puede deshacer.')">
-                            Eliminar
-                        </button>
-                    </form>
+                <div class="alert alert-danger" th:if="${error}" th:text="${error}"></div>
 
-                </td>
+                <div class="empty-state" th:if="${#lists.isEmpty(viviendas)}">
+                    <i class="bi bi-house-door empty-icon"></i>
+                    No hay viviendas registradas todavía.
+                </div>
 
-            </tr>
+                <div class="table-wrap" th:unless="${#lists.isEmpty(viviendas)}">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Número</th>
+                                <th>Bloque</th>
+                                <th>Dirección</th>
+                                <th>Estado</th>
+                                <th class="text-end">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="vivienda : ${viviendas}">
+                                <td th:text="${vivienda.idVivienda}"></td>
+                                <td th:text="${vivienda.numero}"></td>
+                                <td th:text="${vivienda.bloque}"></td>
+                                <td th:text="${vivienda.direccion}"></td>
+                                <td>
+                                    <span class="chip"
+                                          th:classappend="${vivienda.estado == 'Disponible'} ? ' chip-success' : ' chip-info'"
+                                          th:text="${vivienda.estado}"></span>
+                                </td>
+                                <td class="cell-actions">
+                                    <a class="btn btn-sm btn-outline-secondary"
+                                       th:href="@{/viviendas/editar/{id}(id=${vivienda.idVivienda})}"
+                                       title="Editar">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <form class="d-inline"
+                                          th:action="@{/viviendas/eliminar/{id}(id=${vivienda.idVivienda})}"
+                                          method="post">
+                                        <button type="submit"
+                                                class="btn btn-sm btn-outline-danger"
+                                                title="Eliminar"
+                                                onclick="return confirm('¿Eliminar esta vivienda? Puede quedar registrada en cuotas y pagos. Esta acción no se puede deshacer.')">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
 
-        </tbody>
+            </main>
 
-    </table>
+        </div>
 
-    </main>
+    </div>
+
+    <div th:replace="~{fragments/layout :: scripts}"></div>
 
 </body>
 

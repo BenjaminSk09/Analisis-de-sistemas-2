@@ -1,98 +1,103 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cuotas - Sistema de Condominio</title>
-    <link rel="stylesheet" th:href="@{/css/estilos.css}">
-</head>
+<head th:replace="~{fragments/layout :: head('Cuotas')}"></head>
 
 <body>
 
-    <header th:replace="~{fragments/comun :: barra}"></header>
+    <div class="app-shell">
 
-    <h1>Gestión de Cuotas</h1>
+        <aside th:replace="~{fragments/layout :: sidebar('cuotas')}"></aside>
 
-    <p class="acciones-lista">
-        <a class="boton" th:href="@{/cuotas/nuevo}">Registrar nueva cuota</a>
-    </p>
+        <div class="app-main">
 
-    <p class="error" th:if="${error}" th:text="${error}"></p>
+            <header th:replace="~{fragments/layout :: topbar('Gestión de Cuotas')}"></header>
 
-    <table>
+            <main class="app-content">
 
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Vivienda</th>
-                <th>Concepto</th>
-                <th>Periodo</th>
-                <th>Monto</th>
-                <th>Pagado</th>
-                <th>Saldo</th>
-                <th>Vencimiento</th>
-                <th>Estado</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-
-        <tbody>
-
-            <tr th:each="cuota : ${cuotas}">
-
-                <td th:text="${cuota.idCuota}"></td>
-
-                <td th:text="${cuota.vivienda != null
-                        ? cuota.vivienda.numero + ' (' + cuota.vivienda.bloque + ')'
-                        : '-'}"></td>
-
-                <td th:text="${cuota.concepto != null
-                        ? cuota.concepto.nombre : '-'}"></td>
-
-                <td th:text="${cuota.periodo}"></td>
-
-                <td th:text="'Q' + ${cuota.monto}"></td>
-
-                <td th:text="'Q' + ${cuota.montoPagado}"></td>
-
-                <td th:text="'Q' + ${cuota.saldoPendiente}"></td>
-
-                <td th:text="${cuota.fechaVencimiento}"></td>
-
-                <td>
-                    <span th:text="${cuota.estado}"></span>
-                    <span th:if="${cuota.esParcial()}">(parcial)</span>
-                </td>
-
-                <td>
-
-                    <a th:href="@{/cuotas/editar/{id}(id=${cuota.idCuota})}">
-                        Editar
+                <div class="page-head">
+                    <h2>Cuotas</h2>
+                    <a class="btn btn-primary" th:href="@{/cuotas/nuevo}">
+                        <i class="bi bi-plus-lg"></i> Registrar nueva cuota
                     </a>
+                </div>
 
-                    <form class="accion-tabla"
-                          th:action="@{/cuotas/eliminar/{id}(id=${cuota.idCuota})}"
-                          method="post">
-                        <button type="submit"
-                                class="boton-chico peligro"
-                                onclick="return confirm('¿Eliminar esta cuota? Si tiene pagos registrados, no se podrá eliminar.')">
-                            Eliminar
-                        </button>
-                    </form>
+                <div class="alert alert-danger" th:if="${error}" th:text="${error}"></div>
 
-                    <a class="boton-chico"
-                       th:href="@{/pagos/nuevo?cuotaId={id}(id=${cuota.idCuota})}">
-                        Pagar
-                    </a>
+                <div class="empty-state" th:if="${#lists.isEmpty(cuotas)}">
+                    <i class="bi bi-receipt empty-icon"></i>
+                    No hay cuotas registradas todavía.
+                </div>
 
-                </td>
+                <div class="table-wrap" th:unless="${#lists.isEmpty(cuotas)}">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Vivienda</th>
+                                <th>Concepto</th>
+                                <th>Periodo</th>
+                                <th>Monto</th>
+                                <th>Pagado</th>
+                                <th>Saldo</th>
+                                <th>Vencimiento</th>
+                                <th>Estado</th>
+                                <th class="text-end">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="cuota : ${cuotas}">
+                                <td th:text="${cuota.idCuota}"></td>
+                                <td th:text="${cuota.vivienda != null
+                                        ? cuota.vivienda.numero + ' (' + cuota.vivienda.bloque + ')'
+                                        : '-'}"></td>
+                                <td th:text="${cuota.concepto != null ? cuota.concepto.nombre : '-'}"></td>
+                                <td th:text="${cuota.periodo}"></td>
+                                <td th:text="'Q' + ${cuota.monto}"></td>
+                                <td th:text="'Q' + ${cuota.montoPagado}"></td>
+                                <td th:text="'Q' + ${cuota.saldoPendiente}"></td>
+                                <td th:text="${cuota.fechaVencimiento}"></td>
+                                <td>
+                                    <span class="chip"
+                                          th:classappend="${cuota.estado == 'Pagada'} ? ' chip-success' : (${cuota.estado == 'Pendiente'} ? ' chip-warn' : ' chip-neutral')"
+                                          th:text="${cuota.estado}"></span>
+                                    <span class="chip chip-info ms-1"
+                                          th:if="${cuota.esParcial()}">parcial</span>
+                                </td>
+                                <td class="cell-actions">
+                                    <a class="btn btn-sm btn-outline-success"
+                                       th:href="@{/pagos/nuevo?cuotaId={id}(id=${cuota.idCuota})}"
+                                       title="Registrar pago">
+                                        <i class="bi bi-cash"></i>
+                                    </a>
+                                    <a class="btn btn-sm btn-outline-secondary"
+                                       th:href="@{/cuotas/editar/{id}(id=${cuota.idCuota})}"
+                                       title="Editar">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <form class="d-inline"
+                                          th:action="@{/cuotas/eliminar/{id}(id=${cuota.idCuota})}"
+                                          method="post">
+                                        <button type="submit"
+                                                class="btn btn-sm btn-outline-danger"
+                                                title="Eliminar"
+                                                onclick="return confirm('¿Eliminar esta cuota? Si tiene pagos registrados, no se podrá eliminar.')">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
 
-            </tr>
+            </main>
 
-        </tbody>
+        </div>
 
-    </table>
+    </div>
+
+    <div th:replace="~{fragments/layout :: scripts}"></div>
 
 </body>
 
