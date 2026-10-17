@@ -171,6 +171,9 @@ CREATE TABLE cuotas (
         FOREIGN KEY (id_concepto)
         REFERENCES conceptos_cuota(id_concepto),
 
+    CONSTRAINT UK_Cuotas_Vivienda_Concepto_Periodo
+        UNIQUE (id_vivienda, id_concepto, periodo),
+
     CONSTRAINT CK_Cuotas_Monto
         CHECK (monto >= 0),
 

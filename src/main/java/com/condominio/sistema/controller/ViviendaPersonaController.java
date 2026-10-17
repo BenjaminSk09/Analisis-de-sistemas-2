@@ -3,6 +3,7 @@ package com.condominio.sistema.controller;
 import com.condominio.sistema.model.Persona;
 import com.condominio.sistema.model.Vivienda;
 import com.condominio.sistema.model.ViviendaPersona;
+import com.condominio.sistema.util.Paginacion;
 import com.condominio.sistema.service.PersonaService;
 import com.condominio.sistema.service.ViviendaPersonaService;
 import com.condominio.sistema.service.ViviendaService;
@@ -36,12 +37,11 @@ public class ViviendaPersonaController {
     }
 
     @GetMapping
-    public String listar(Model model) {
+    public String listar(
+            Model model,
+            @RequestParam(defaultValue = "1") int pagina) {
 
-        model.addAttribute(
-                "relaciones",
-                viviendaPersonaService.listarTodas()
-        );
+        Paginacion.aplicar(model, "relaciones", viviendaPersonaService.listarTodas(), pagina);
 
         return "vivienda-persona/lista";
     }

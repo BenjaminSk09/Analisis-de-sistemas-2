@@ -1,6 +1,7 @@
 package com.condominio.sistema.controller;
 
 import com.condominio.sistema.model.Vivienda;
+import com.condominio.sistema.util.Paginacion;
 import com.condominio.sistema.service.ViviendaService;
 
 import org.springframework.stereotype.Controller;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/viviendas")
@@ -22,8 +24,10 @@ public class ViviendaController {
     }
 
     @GetMapping
-    public String listar(Model model) {
-        model.addAttribute("viviendas", viviendaService.listarTodas());
+    public String listar(
+            Model model,
+            @RequestParam(defaultValue = "1") int pagina) {
+        Paginacion.aplicar(model, "viviendas", viviendaService.listarTodas(), pagina);
         return "viviendas/lista";
     }
 

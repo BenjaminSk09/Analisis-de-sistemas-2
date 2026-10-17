@@ -2,6 +2,7 @@ package com.condominio.sistema.controller;
 
 import com.condominio.sistema.model.Vehiculo;
 import com.condominio.sistema.model.Vivienda;
+import com.condominio.sistema.util.Paginacion;
 import com.condominio.sistema.service.VehiculoService;
 import com.condominio.sistema.service.ViviendaService;
 
@@ -29,8 +30,10 @@ public class VehiculoController {
     }
 
     @GetMapping
-    public String listar(Model model) {
-        model.addAttribute("vehiculos", vehiculoService.listarTodos());
+    public String listar(
+            Model model,
+            @RequestParam(defaultValue = "1") int pagina) {
+        Paginacion.aplicar(model, "vehiculos", vehiculoService.listarTodos(), pagina);
         return "vehiculos/lista";
     }
 

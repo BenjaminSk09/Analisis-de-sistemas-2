@@ -37,3 +37,7 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Configuracion local con la clave de la base (no va al repo) ###
+config/
+.env

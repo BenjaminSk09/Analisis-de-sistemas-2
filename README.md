@@ -48,8 +48,8 @@ El segundo carga los datos de ejemplo (incluye los 3 usuarios).
 ### 3. Configurar la conexion
 
 La configuracion esta en `src/main/resources/application.properties`. Por
-defecto apunta a `localhost`, base `condominio`, usuario `sa` con password
-`Sgac2026!`.
+defecto apunta a `localhost`, base `condominio` y usuario `sa`. La
+contrasena **no tiene valor por defecto**: hay que indicarla al arrancar.
 
 Si en la maquina nueva el servidor, la base o las credenciales son distintas,
 **no hace falta editar el archivo**: se sobreescriben con variables de entorno
@@ -60,7 +60,7 @@ al arrancar.
 | `DB_SERVER` | `localhost` | Servidor SQL Server |
 | `DB_NAME` | `condominio` | Nombre de la base |
 | `DB_USER` | `sa` | Usuario |
-| `DB_PASSWORD` | `Sgac2026!` | Contrasena |
+| `DB_PASSWORD` | *(obligatoria)* | Contrasena |
 
 Ejemplo en Windows (PowerShell):
 
@@ -68,6 +68,9 @@ Ejemplo en Windows (PowerShell):
 $env:DB_PASSWORD = "OtraPassword"
 .\mvnw.cmd spring-boot:run
 ```
+
+Alternativa: crear `config/application.properties` junto al proyecto con
+`spring.datasource.password=TU_PASSWORD` (esa carpeta esta ignorada por git).
 
 ### 4. Arrancar
 
@@ -98,9 +101,17 @@ Espera hasta que aparezca `Started SistemaCondominioApplication` y abre
 
 ## Notas utiles
 
-- **Las contrasenas se guardan con SHA-256**, no en texto plano. El script de
-  datos ya trae los hashes; si insertas un usuario a mano en la base, guarda el
-  hash, no la contrasena.
+- **Las contrasenas se guardan con BCrypt**. El script de datos trae hashes
+  SHA-256 antiguos: siguen funcionando y se convierten a BCrypt automaticamente
+  la primera vez que el usuario inicia sesion. Crea los usuarios desde la
+  pantalla de Usuarios, no a mano en la base.
+- **Permisos por rol:** Administrador accede a todo; Personal Administrativo a
+  personas, viviendas, vehiculos y notificaciones; Encargado de Cobros a cuotas,
+  pagos y notificaciones. Solo el Administrador puede eliminar registros.
+- **Seguridad de sesion:** todos los formularios llevan un token CSRF y el login
+  se bloquea 5 minutos tras 5 intentos fallidos.
+- **Bases ya creadas:** ejecuta `MEJORAS BD (ejecutar una vez).sql` para agregar
+  la restriccion que impide duplicar una cuota (vivienda + concepto + periodo).
 - **`spring.jpa.hibernate.ddl-auto=validate`**: la aplicacion NO crea ni
   modifica tablas. Si las entidades no coinciden con la base, se niega a
   arrancar. Es intencional, para no dañar los datos.
